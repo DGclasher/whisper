@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock title %}
+{% block body %}
+    <div class="text-white flex flex-col items-center">
+        <h1>Welcome to whisper</h1>
+        {% if current_user.is_authenticated %}
+        <p>{{current_user.username}}, why don't you join or create a room</p>
+        <a href="{{url_for('join')}}">Join / Create a Room</a>
+            
+        {% else %}
+            <p>To use whisper, you must <a href="{{url_for('login')}}">Login</a> or <a href="{{url_for('register')}}">Register</a></p>
+        {% endif %}
+    </div>
+{% endblock body %}
