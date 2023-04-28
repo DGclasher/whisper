@@ -3,14 +3,36 @@
     Home
 {% endblock title %}
 {% block body %}
-    <div class="text-white flex flex-col items-center">
-        <h1>Welcome to whisper</h1>
+    <div class="text-white flex flex-col items-center p-1 gap-y-2">
+        <h1 class="text-3xl">Welcome to whisper</h1>
         {% if current_user.is_authenticated %}
-        <p>{{current_user.username}}, why don't you join or create a room</p>
-        <a href="{{url_for('join')}}">Join / Create a Room</a>
+        <p><b>{{current_user.username}}</b>, why don't you</p>
+        <a href="{{url_for('join')}}" class="border-solid border-black bg-lime-700 hover:bg-lime-900 px-3 py-2 rounded-xl">Join</a>OR<a href="{{url_for('create_room')}}" class="border-solid border-black bg-lime-700 hover:bg-lime-900 px-3 py-2 rounded-xl"> Create a Room</a>
             
         {% else %}
             <p>To use whisper, you must <a href="{{url_for('login')}}">Login</a> or <a href="{{url_for('register')}}">Register</a></p>
         {% endif %}
     </div>
+    {% if rooms %}
+        <div class="p-5 flex flex-col items-center justify-center">
+            <h1 class="text-3xl">My Rooms</h1>
+            {% for room in rooms %}
+                <div class="gap-y-2 mt-2 flex flex-col items-center bg-zinc-900 w-[50%] h-[150px] p-2 rounded-xl">
+                    <h2 class="text-2xl">{{room.room_name}}</h2>
+                    <p>Created At: {{room.created_at}}</p>
+                    <div class="flex flex-row gap-x-2">
+
+                        <form action="/chat/{{room.room_name}}" method="post">
+                            <input type="hidden" value="{{current_user.username}}" name="username">
+                            <input type="hidden" value="{{room.room_name}}" name="room">
+                            <button  type="submit" class="p-1 bg-lime-800 rounded-xl border-solid border-black hover:border-dotted mt-4">Join Room</button>
+                        </form>
+                        <form action="/del_room/{{room.room_name}}" method="post">
+                            <button  type="submit" class="p-1 bg-red-900 rounded-xl border-solid border-black hover:border-dotted mt-4">Delete Room</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock body %}

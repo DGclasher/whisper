@@ -19,7 +19,10 @@ login_manager.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template('home.html', current_user=current_user)
+    rooms = []
+    if current_user.is_authenticated:
+        rooms = db.get_rooms_for_user(current_user.username)
+    return render_template('home.html', current_user=current_user, rooms=rooms)
 
 
 @app.route('/join')
@@ -71,12 +74,52 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/chat', methods=['POST'])
-def chat():
+@app.route('/create_room', methods=['GET', 'POST'])
+@login_required
+def create_room():
+    message = ''
+    if request.method == 'POST':
+        room_name = request.form.get('room_name')
+        usernames = [username.strip()
+                     for username in request.form.get('members').split(',')]
+        if len(room_name) and len(usernames):
+            room_id = db.save_room(room_name, current_user.username)
+            if current_user.username in usernames:
+                usernames.remove(current_user.username)
+            db.add_room_members(room_id, room_name,
+                                usernames, current_user.username)
+            return redirect(url_for('home'))
+        else:
+            message = 'Failed to create room'
+            return render_template('create_room.html', message=message)
+    return render_template('create_room.html')
+
+
+@app.route('/del_room/<room_name>', methods=['POST'])
+@login_required
+def del_room(room_name):
+    if request.method == 'POST':
+        if room_name:
+            room = db.get_room(room_name)
+            if room['created_by'] == current_user.username:
+
+                db.delete_room(room_name)
+                print("room deleted")
+                return redirect(url_for('home'))
+
+    return redirect(url_for('home'))
+
+
+@app.route('/chat/<room_name>/', methods=['POST'])
+def chat(room_name):
     username = request.form["username"]
-    room = request.form["room"]
-    if username and room:
-        return render_template('chat.html', username=username, room=room, current_user=current_user)
+    try:
+        room = db.get_room(room_name)
+        if room and db.is_room_member(str(room['_id']), current_user.username):
+            return render_template('chat.html', username=username, room=room, current_user=current_user)
+    except:
+        message = "Unable to join that room"
+        return (url_for('home', message=message))
     return redirect(url_for('home'))
 
 
@@ -114,4 +157,4 @@ def load_user(username):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    socketio.run(app, port=port, debug=False)
+    socketio.run(app, port=port, debug=True)
