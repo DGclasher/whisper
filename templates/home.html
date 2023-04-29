@@ -17,7 +17,7 @@
         <div class="p-5 flex flex-col items-center justify-center">
             <h1 class="text-3xl">My Rooms</h1>
             {% for room in rooms %}
-                <div class="gap-y-2 mt-2 flex flex-col items-center bg-zinc-900 w-[50%] h-[150px] p-2 rounded-xl">
+                <div class="gap-y-2 mt-2 flex flex-col items-center bg-zinc-900 w-screen md:w-[50%] h-[150px] p-2 rounded-xl">
                     <h2 class="text-2xl">{{room.room_name}}</h2>
                     <p>Created At: {{room.created_at}}</p>
                     <div class="flex flex-row gap-x-2">

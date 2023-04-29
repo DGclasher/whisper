@@ -1,29 +1,33 @@
 {% extends 'base.html' %}
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/static/css/style.css">
 {% endblock head %}
 {% block title %}
     Chat Room
 {% endblock title %}
 {% block body %}
-    <div class="flex flex-col items-center">
-        <h1>Welcome {{ username }} to room {{ room }}</h1>
-        <div id="messages" class="flex flex-col">
+   
+        <div class="flex flex-col items-center h-[80vh]">
+            <h1 class="text-2xl">Welcome {{ username }} to room {{ room.room_name }}</h1>
+            <div id="messages" class="flex flex-col">
+            </div> 
         </div>
-        <form action="" id="message_input_form">
-            <input type="text" placeholder="hey!" id="message_input">
-            <button type="submit">Send</button>
-        </form>
-        <button id="leave-btn">Leave Room</button>
-    </div>
+        <div class="bottom-2 w-screen fixed items-center justify-center">
+            <form action="" id="message_input_form" class="flex flex-row p-2">
+                <input type="text" placeholder="hey!" id="message_input" class="bg-zinc-800 text-white border border-solid border-white p-2 w-[70%] rounded-xl">
+                <button type="submit" class="p-2 bg-lime-700 hover:bg-lime-900 rounded-xl m-1">Send</button>
+                <button id="leave-btn" class="p-2 bg-red-700 hover:bg-red-900 rounded-xl m-1">Leave Room</button>
+            </form>
+        </div>
 {% endblock body %}
 {% block bottom %}
     <script>
         let socket = io.connect('http://127.0.0.1:5000')
         socket.on('connect', ()=>{
             socket.emit('join', {
-                username: "{{username}}",
-                room: "{{room}}"
+                username: "{{current_user.username}}",
+                room: "{{room._id}}"
             })
             let message_input = document.getElementById('message_input')
             document.getElementById('message_input_form').onsubmit = (e)=>{
@@ -31,8 +35,8 @@
                 let message = message_input.value.trim()
                 if(message.length){
                     socket.emit('send_message', {
-                        username: "{{username}}",
-                        room: "{{room}}",
+                        username: "{{current_user.username}}",
+                        room: "{{room._id}}",
                         message: message
                     })
                 }
@@ -41,8 +45,8 @@
             }
             document.getElementById('leave-btn').onclick = ()=>{
                 socket.emit('leave', {
-                    username: "{{username}}",
-                    room: "{{room}}"
+                    username: "{{current_user.username}}",
+                    room: "{{room._id}}"
                 })
             }
         })
@@ -52,10 +56,14 @@
             const newNode = document.createElement('p1')
             newNode.innerHTML = `<b>${data.username}</b> has joined the party`
             messages.appendChild(newNode)
+            setTimeout(()=>{
+                messages.removeChild(newNode)
+            }, 3000)
         })
         socket.on('receive_message', (data)=>{
             const newNode = document.createElement('p1')
             newNode.innerHTML = `<b>${data.username}</b>: ${data.message}`
+            newNode.classList.add("messages")
             document.getElementById('messages').appendChild(newNode)
         })
         socket.on('leave_room', (data)=>{

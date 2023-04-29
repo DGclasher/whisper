@@ -1,20 +1,27 @@
 import os
+import db
 import time
+import pytz
 import threading
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 
 load_dotenv()
 
 client = MongoClient(os.environ.get('MONGO_URI'))
-db = client.get_database(os.environ.get('DB'))
-user_collections = db.get_collection("user")
+db_remote = client.get_database(os.environ.get('DB'))
+user_collections = db_remote.get_collection("user")
 
 
 def delete_old_users():
     cutoff_time = datetime.utcnow() - timedelta(hours=24)
-    user_collections.delete_many({'created_at': {'$lt': cutoff_time}})
+    cutoff_time = cutoff_time.replace(tzinfo=pytz.UTC)
+    old_users = list(user_collections.find(
+        {'created_at': {'$lt': cutoff_time}}))
+    if old_users:
+        for user in old_users:
+            db.delete_user(user['_id'])
 
 
 def backgroud_task_1():

@@ -15,8 +15,8 @@
         
     {% endblock head %}
 </head>
-<body class="">
-    <header class="lg:px-16 px-6 bg-black flex flex-wrap items-center z-10 lg:py-0 py-2">
+<body class="bg-zinc-800 text-white">
+    <header class="lg:px-16 px-6 bg-black flex flex-wrap items-center z-10 lg:py-0 py-2 text-white sticky top-0">
         <div class="flex-1 flex justify-between items-center">
           <a href="/" class="text-xl hover:text-lime-700">
             WhisPer!
@@ -26,7 +26,7 @@
       <input class="hidden" type="checkbox" id="menu-toggle" />
       <div class="hidden lg:flex lg:items-center lg:w-auto w-full" id="menu">
         <nav>
-          <ul class="lg:flex items-center justify-between text-base text-gray-700 pt-4 lg:pt-0">
+          <ul class="lg:flex items-center justify-between text-base text-white pt-4 lg:pt-0">
             {% if current_user.is_authenticated %}
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('join')}}">Join a room</a></li>
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('logout')}}">Logout</a></li>    

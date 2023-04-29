@@ -102,24 +102,48 @@ def del_room(room_name):
         if room_name:
             room = db.get_room(room_name)
             if room['created_by'] == current_user.username:
-
                 db.delete_room(room_name)
-                print("room deleted")
                 return redirect(url_for('home'))
-
     return redirect(url_for('home'))
 
 
-@app.route('/chat/<room_name>/', methods=['POST'])
+@app.route('/edit_room/<room_name>', methods=['GET', 'POST'])
+@login_required
+def edit_room(room_name):
+    try:
+        room = db.get_room(room_name)
+        if room and db.is_room_admin(str(room['_id']), current_user.username):
+            current_members = [member['_id']['username']
+                               for member in db.get_room_members(room['_id'])]
+            if request.method == 'POST':
+                room_name = request.form.get('room_name')
+                db.update_room(str(room['_id']), room_name)
+                new_members = [username.strip()
+                               for username in request.form.get('members').split(',')]
+                members_to_add = list(set(new_members) - set(current_members))
+                members_to_delete = list(set(current_members)-set(new_members))
+                if len(members_to_add):
+                    db.add_room_members(str(room['_id']), room['room_name'], members_to_add, current_user.username)
+                if len(members_to_delete):
+                    db.remove_room_members(str(room['_id']), members_to_delete)
+            current_members_str = ','.join(current_members)
+            return render_template('edit_room.html', room=room, current_user=current_user, current_members_str=current_members_str)
+        return redirect(request.referrer)
+    except:
+        return redirect(request.referrer)
+
+
+@app.route('/chat/<room_name>/', methods=['GET', 'POST'])
 def chat(room_name):
-    username = request.form["username"]
     try:
         room = db.get_room(room_name)
         if room and db.is_room_member(str(room['_id']), current_user.username):
-            return render_template('chat.html', username=username, room=room, current_user=current_user)
+            room_members = db.get_room_members(str(room['_id']))
+            print(room_members)
+            return render_template('chat.html', room=room, current_user=current_user, room_members=room_members)
     except:
         message = "Unable to join that room"
-        return (url_for('home', message=message))
+        return render_template('join.html', message=message)
     return redirect(url_for('home'))
 
 

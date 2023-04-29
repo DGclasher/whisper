@@ -28,12 +28,13 @@ def save_user(username, password):
 
 def get_user(username):
     user_data = users_collection.find_one({'_id': username})
-    return User(user_data['_id'], user_data['password']) if user_data else None
+    return User(user_data['_id'], user_data['password'], user_data['created_at']) if user_data else None
 
 
 def delete_user(username):
     users_collection.delete_one({'_id': username})
-    members_collection.delete_many({'_id': {'username': username}})
+    rooms_collection.delete_many({'created_by': username})
+    members_collection.delete_many({'_id.username': username})
 
 
 def save_room(room_name, creator):
@@ -103,5 +104,5 @@ def is_room_member(room_id, username):
 
 
 def is_room_admin(room_id, username):
-    members_collection.count_documents({'_id': {'room_id': ObjectId(
+    return members_collection.count_documents({'_id': {'room_id': ObjectId(
         room_id), 'username': username}, 'is_room_admin': True})
