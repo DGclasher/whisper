@@ -8,10 +8,33 @@
 {% endblock title %}
 {% block body %}
    
-        <div class="flex flex-col items-center h-[80vh]">
-            <h1 class="text-2xl">Welcome {{ username }} to room {{ room.room_name }}</h1>
+        <div class="flex flex-col h-[80vh] w-screen p-3">
+            <h1 class="text-2xl text-center">Welcome {{ username }} to room {{ room.room_name }}</h1>
+            <button id="older_messages"></button>
+            <div class="flex flex-col" id="joined">
+
+            </div>
             <div id="messages" class="flex flex-col">
+                {% if messages %}    
+                    {% for message in messages %}
+                        <p><b>{{message.sender}}:[{{message.sent_at}}]</b>: {{message.text}}</p>
+                    {% endfor %}
+                {% endif %}
             </div> 
+            <div class="fixed inset-y-0 right-2 p-2 h-[100%] w-[15vh] bg-slate-800 hidden md:block">
+                <h2 class="mt-20">Room Members</h2>
+                <ul>
+                    {% for member in room_members %}
+                    <li>{{ member._id.username }}</li>
+                    {% endfor %}
+                </ul>
+                {% if room.created_by==current_user.username %}
+                <div class="py-5"></div>
+                <form action="/edit_room/{{room.room_name}}" method="get">
+                    <button type="submit" class="p-2 rounded-xl hover:bg-lime-900 bg-lime-800">Edit Room</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
         <div class="bottom-2 w-screen fixed items-center justify-center">
             <form action="" id="message_input_form" class="flex flex-row p-2">
@@ -52,9 +75,10 @@
         })
         socket.on('join_room', (data)=>{
             console.log(data);
-            const messages = document.getElementById('messages')
+            const messages = document.getElementById('joined')
             const newNode = document.createElement('p1')
             newNode.innerHTML = `<b>${data.username}</b> has joined the party`
+            newNode.classList.add("text-center")
             messages.appendChild(newNode)
             setTimeout(()=>{
                 messages.removeChild(newNode)
@@ -62,7 +86,7 @@
         })
         socket.on('receive_message', (data)=>{
             const newNode = document.createElement('p1')
-            newNode.innerHTML = `<b>${data.username}</b>: ${data.message}`
+            newNode.innerHTML = `<b>${data.username}:[${data.sent_at}]</b>: ${data.message}`
             newNode.classList.add("messages")
             document.getElementById('messages').appendChild(newNode)
         })

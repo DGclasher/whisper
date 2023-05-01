@@ -5,20 +5,13 @@
 {% block body %}
 <div class="flex flex-col items-center w-[100%] h-[100%]">
     <div class="flex flex-col mt-5 w-[400px] md:w-[600px] h-[80vh]">
-        <h2 class="text-2xl">Edit room {{room.room_name}}</h2>
-        <h2 class="text-xl">Room Members</h2>
-        <ul>
-            {% for member in room_members %}
-                <li>{{ member._id.username }}</li>
-            {% endfor %}
-        </ul>
         <p>{{message}}</p>
         <form action="/edit_room/{{room.room_name}}" method="post" class="gap-y-3 flex flex-col items-center justify-center">
             <label class="text-2xl">Room Name</label>
             <input type="text" class="w-[90%] h-[40px] rounded-xl bg-zinc-700 text-white p-2" name="room_name" value="{{room.room_name}}">
             <label class="text-2xl">Members</label>
-            <input type="text" name="add_members" class="w-[90%] h-[60px] rounded-xl bg-zinc-700 text-white p-2" value="{{current_members_str}}">
-            <button type="submit" class="mt-3 bg-lime-700 hover:bg-lime-800 p-2 rounded-xl">Create</button>
+            <input type="text" name="members" class="w-[90%] h-[60px] rounded-xl bg-zinc-700 text-white p-2" value="{{current_members_str}}">
+            <button type="submit" class="mt-3 bg-lime-700 hover:bg-lime-800 p-2 rounded-xl">Submit</button>
         </form>
     </div>
 </div>

@@ -30,6 +30,9 @@
                         <form action="/del_room/{{room.room_name}}" method="post">
                             <button  type="submit" class="p-1 bg-red-900 rounded-xl border-solid border-black hover:border-dotted mt-4">Delete Room</button>
                         </form>
+                        <form action="/edit_room/{{room.room_name}}" method="get">
+                            <button type="submit" class="p-1 bg-red-900 rounded-xl border-solid border-black hover:border-dotted mt-4">Edit Room</button>
+                        </form>
                     </div>
                 </div>
             {% endfor %}

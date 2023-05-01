@@ -1,6 +1,5 @@
 import os
 import db
-import time
 import pytz
 import threading
 from dotenv import load_dotenv
@@ -15,7 +14,7 @@ user_collections = db_remote.get_collection("user")
 
 
 def delete_old_users():
-    cutoff_time = datetime.utcnow() - timedelta(hours=24)
+    cutoff_time = datetime.now() - timedelta(hours=24)
     cutoff_time = cutoff_time.replace(tzinfo=pytz.UTC)
     old_users = list(user_collections.find(
         {'created_at': {'$lt': cutoff_time}}))
@@ -24,11 +23,8 @@ def delete_old_users():
             db.delete_user(user['_id'])
 
 
-def backgroud_task_1():
-    while True:
-        delete_old_users()
-        time.sleep(86400)
-
-
-threading.Thread(target=backgroud_task_1).start()
-print("task running")
+start_time = datetime.now()
+print("Task Starting",)
+delete_old_users()
+end_time = datetime.now()
+print("Task Ended\nTime Taken:", (end_time-start_time).seconds)
