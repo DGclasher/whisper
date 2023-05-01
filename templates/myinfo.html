@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+    Info
+{% endblock title %}
+{% block body %}
+    <div class="flex flex-col items-center p-2 w-screen h-[800px] ">
+        <div class="flex flex-col p-2 text-white w-[80%] md:w-[50%] h-[30%] md:h-[40%] gap-y-2 bg-zinc-900 items-center rounded-xl">
+            <h1 class="text-2xl mt-3">{{current_user.username}}</h1>
+            <p>Created At: {{current_user.created_at}}</p>
+            <form action="/delete" method="post" class="mt-6">
+                <button type="submit" class="p-2 rounded-xl bg-red-700 hover:bg-red-900">Delete Me</button>
+            </form>
+        </div>
+    </div>
+{% endblock body %}

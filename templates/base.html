@@ -30,7 +30,7 @@
             {% if current_user.is_authenticated %}
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('join')}}">Join a room</a></li>
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('logout')}}">Logout</a></li>    
-            <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="#">{{current_user.username}}</a></li>    
+            <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('myinfo')}}">{{current_user.username}}</a></li>    
             {% else %}
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('login')}}">Login</a></li>    
             <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:text-lime-700" href="{{url_for('register')}}">Register</a></li>    
