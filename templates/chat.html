@@ -46,7 +46,7 @@
 {% endblock body %}
 {% block bottom %}
     <script>
-        let socket = io.connect('https://whisper-cq4x.onrender.com')
+        let socket = io.connect()
         socket.on('connect', ()=>{
             socket.emit('join', {
                 username: "{{current_user.username}}",
