@@ -194,7 +194,6 @@ def on_send_message(data):
 
 @socketio.on('leave')
 def on_leave(data):
-    print('on_leave called')  # Debugging line
     username = data['username']
     room = data['room']
     leave_room(room)
