@@ -15,9 +15,10 @@ user_collections = db_remote.get_collection("user")
 
 def delete_old_users():
     cutoff_time = datetime.now() - timedelta(hours=24)
-    cutoff_time = cutoff_time.replace(tzinfo=pytz.UTC)
+    print(cutoff_time)
     old_users = list(user_collections.find(
         {'created_at': {'$lt': cutoff_time}}))
+    print(old_users)
     if old_users:
         for user in old_users:
             db.delete_user(user['_id'])

@@ -1,13 +1,13 @@
 import os
 import db
 import secrets
+from datetime import datetime
 from dotenv import load_dotenv
 from bson.json_util import dumps
-from datetime import datetime
 from pymongo.errors import DuplicateKeyError
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_socketio import SocketIO, join_room, leave_room
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__, static_folder='./static', static_url_path='/static')
 app.secret_key = secrets.token_hex(16)
@@ -194,7 +194,6 @@ def on_send_message(data):
 
 @socketio.on('leave')
 def on_leave(data):
-    print('on_leave called')  # Debugging line
     username = data['username']
     room = data['room']
     leave_room(room)
@@ -210,4 +209,4 @@ def load_user(username):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    socketio.run(app, port=port, debug=True)
+    socketio.run(app, port=port, debug=False)
