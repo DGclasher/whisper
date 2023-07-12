@@ -19,5 +19,5 @@ sudo docker pull dgclasher/whisper
 
 Run the container
 ```
-sudo docker run --env-file /path/to/.env -p 5000:5000 -d dgclasher/whisper
+sudo docker run --rm --name whisper --env-file /path/to/.env -p 5000:5000 -d dgclasher/whisper
 ```
