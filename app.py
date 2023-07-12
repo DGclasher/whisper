@@ -1,13 +1,13 @@
 import os
 import db
 import secrets
+from datetime import datetime
 from dotenv import load_dotenv
 from bson.json_util import dumps
-from datetime import datetime
 from pymongo.errors import DuplicateKeyError
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_socketio import SocketIO, join_room, leave_room
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__, static_folder='./static', static_url_path='/static')
 app.secret_key = secrets.token_hex(16)
