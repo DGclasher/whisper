@@ -2,8 +2,7 @@ name: run tasks
 
 on:
   schedule:
-    - cron: "0 10 */5 * *"
-  workflow_dispatch:
+    - cron: "0 10 * * *"
 
 jobs:
   delete_users:
