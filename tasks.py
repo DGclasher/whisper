@@ -1,31 +1,19 @@
+#!/usr/bin/env python3
+
 import os
-import db
-import pytz
-import threading
-from dotenv import load_dotenv
-from pymongo import MongoClient
+from db import users_collection, delete_user
 from datetime import datetime, timedelta
 
-load_dotenv()
-
-client = MongoClient(os.environ.get('MONGO_URI'))
-db_remote = client.get_database(os.environ.get('DB'))
-user_collections = db_remote.get_collection("user")
-
-
 def delete_old_users():
-    cutoff_time = datetime.now() - timedelta(hours=24)
-    print(cutoff_time)
-    old_users = list(user_collections.find(
-        {'created_at': {'$lt': cutoff_time}}))
-    print(old_users)
-    if old_users:
-        for user in old_users:
-            db.delete_user(user['_id'])
+    current_time = datetime.now()
+    threshold_time = current_time - timedelta(hours=24)
+    old_users = users_collection.find({'created_at': {'$lt': threshold_time}})
+    deleted_count = 0
+    for user in old_users:
+        delete_user(user['_id'])
+        deleted_count += 1
 
+    print(f"Number of users deleted: {deleted_count}")
 
-start_time = datetime.now()
-print("Task Starting",)
-delete_old_users()
-end_time = datetime.now()
-print("Task Ended\nTime Taken:", (end_time-start_time).seconds)
+if __name__ == "__main__":
+    delete_old_users()
