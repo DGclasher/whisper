@@ -6,11 +6,7 @@ Whisper is a chat application built using Flask and Socket.IO. It allows users t
 
 ## Deploy Locally
 
-Make a `.env` file with contents
-```
-MONGO_URI=<MongoDB connection URL>
-DB=<Database Name>
-```
+Make a `.env` at root of project, refer to [this](./.env.example) for creating `.env`.
 
 Pull image from docker hub
 ```

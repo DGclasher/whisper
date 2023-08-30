@@ -1,6 +1,0 @@
-.git
-.env
-venv
-.vscode
-.github
-**/__pycache__
