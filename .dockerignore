@@ -3,4 +3,5 @@
 venv
 .vscode
 .github
+vercel.json
 **/__pycache__
